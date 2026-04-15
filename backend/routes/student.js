@@ -142,7 +142,6 @@ router.post('/execute', async (req, res) => {
     }
 
     const testCases = question.testCases;
-    let results = [];
     let allPassed = true;
 
     // Send code to Piston API for each test case
