@@ -15,6 +15,16 @@ require('./config/passport');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Environment Variable Validation for Deployment
+const requiredEnv = ['MONGODB_URI', 'JWT_SECRET', 'SESSION_SECRET'];
+const missingEnv = requiredEnv.filter(k => !process.env[k]);
+
+if (missingEnv.length > 0) {
+  console.error('❌ DEPLOYMENT ERROR: Missing required environment variables:', missingEnv.join(', '));
+  console.error('Check your Render Dashboard -> Environment tab.');
+  process.exit(1); 
+}
+
 // Middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
@@ -29,9 +39,13 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/student', studentRoutes);
 
 // Database Connection
+console.log('--- Startup: Attempting to connect to MongoDB ---');
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    console.log('✅ Connected to MongoDB Atlas');
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
-  .catch((err) => console.log('MongoDB connection error:', err));
+  .catch((err) => {
+    console.error('❌ MongoDB Connection Error:', err.message);
+    process.exit(1);
+  });
