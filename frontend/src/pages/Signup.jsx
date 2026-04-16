@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { UserPlus } from 'lucide-react';
+import { API_BASE_URL } from '../api/config';
 
 const Signup = () => {
   const [formData, setFormData] = useState({ username: '', password: '', role: 'student' });
@@ -10,7 +11,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', formData);
+      const res = await axios.post(`${API_BASE_URL}/api/auth/register`, formData);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       navigate(res.data.user.role === 'admin' ? '/admin' : '/student');

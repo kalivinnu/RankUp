@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { LogIn } from 'lucide-react';
+import { API_BASE_URL } from '../api/config';
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -10,7 +11,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, formData);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       navigate(res.data.user.role === 'admin' ? '/admin' : '/student');
@@ -20,11 +21,11 @@ const Login = () => {
   };
 
   const handleGoogleAuth = () => {
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    window.location.href = `${API_BASE_URL}/api/auth/google`;
   };
 
   const handleGithubAuth = () => {
-    window.location.href = 'http://localhost:5000/api/auth/github';
+    window.location.href = `${API_BASE_URL}/api/auth/github`;
   };
 
   return (

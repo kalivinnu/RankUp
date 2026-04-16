@@ -8,7 +8,9 @@ import 'prismjs/components/prism-cpp';
 import 'prismjs/components/prism-java';
 import 'prismjs/themes/prism-tomorrow.css';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+import { API_BASE_URL } from '../api/config';
+
+const API_BASE = `${API_BASE_URL}/api`;
 
 const CustomEditor = ({ value, onValueChange, language, disabled }) => {
   const prismLang = language === 'python3' ? 'python' : (language === 'c++' ? 'cpp' : 'java');

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { PlusCircle, BarChart3, List, Layers, CheckCircle, MessageSquare, Edit2, Trash2 } from 'lucide-react';
+import { API_BASE_URL } from '../api/config';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const API_BASE = `${API_BASE_URL}/api`;
 
 const AdminDashboard = () => {
   // Dashboard State
@@ -142,7 +143,7 @@ const AdminDashboard = () => {
   const handleDeleteQuestion = async (id) => {
     if (!window.confirm('Delete this question permanently?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/questions/${id}`, {
+      await axios.delete(`${API_BASE}/admin/questions/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       fetchDashboardData();
@@ -214,7 +215,7 @@ const AdminDashboard = () => {
   const handleDeleteTest = async (testId) => {
     if (!window.confirm('Delete test?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/tests/${testId}`, {
+      await axios.delete(`${API_BASE}/admin/tests/${testId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       fetchDashboardData();
@@ -274,7 +275,7 @@ const AdminDashboard = () => {
   const handleDeleteRoadmap = async (id) => {
     if (!window.confirm('Are you sure you want to delete this roadmap?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/roadmaps/${id}`, {
+      await axios.delete(`${API_BASE}/admin/roadmaps/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       fetchDashboardData();
