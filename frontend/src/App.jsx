@@ -10,11 +10,17 @@ import Navbar from './components/Navbar';
 // Very basic auth guard
 const PrivateRoute = ({ children, role }) => {
   const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  let user = {};
+  try {
+    user = JSON.parse(localStorage.getItem('user') || '{}');
+  } catch (e) {
+    user = {};
+  }
   
   if (!token) return <Navigate to="/login" />;
   if (role && user.role !== role) {
-    return <Navigate to={user.role === 'admin' ? '/admin' : '/student'} />;
+    const target = user.role === 'admin' ? '/admin' : '/student';
+    return <Navigate to={target} replace />;
   }
   return children;
 };

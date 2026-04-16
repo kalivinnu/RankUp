@@ -5,7 +5,13 @@ import { LogOut, Sun, Moon } from 'lucide-react';
 const Navbar = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const token = localStorage.getItem('token');
+  let user = {};
+  try {
+    user = JSON.parse(localStorage.getItem('user') || '{}');
+  } catch (e) {
+    user = {};
+  }
   const [isLightMode, setIsLightMode] = useState(false);
 
   useEffect(() => {
