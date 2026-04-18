@@ -1,3 +1,4 @@
+import './prism-init'; // Loads Prism and sets window.Prism before anything else
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 

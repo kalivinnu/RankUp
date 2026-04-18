@@ -24,9 +24,6 @@ const Login = () => {
     window.location.href = `${API_BASE_URL}/api/auth/google`;
   };
 
-  const handleGithubAuth = () => {
-    window.location.href = `${API_BASE_URL}/api/auth/github`;
-  };
 
   return (
     <div className="flex-center" style={{ minHeight: '90vh', padding: '2rem' }}>

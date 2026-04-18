@@ -13,7 +13,7 @@ const PrivateRoute = ({ children, role }) => {
   let user = {};
   try {
     user = JSON.parse(localStorage.getItem('user') || '{}');
-  } catch (e) {
+  } catch {
     user = {};
   }
   

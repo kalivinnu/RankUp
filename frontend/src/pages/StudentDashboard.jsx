@@ -1,11 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BookOpen, Map, Edit3, CheckCircle, Clock, Play, Server, User, LogOut, Sun, Moon, ChevronRight, Layout, Target, ShieldAlert, Award, FileText } from 'lucide-react';
 import Prism from 'prismjs';
-import 'prismjs/components/prism-python';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-cpp';
-import 'prismjs/components/prism-java';
 import 'prismjs/themes/prism-tomorrow.css';
 
 import { API_BASE_URL } from '../api/config';

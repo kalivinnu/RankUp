@@ -5,11 +5,10 @@ import { LogOut, Sun, Moon } from 'lucide-react';
 const Navbar = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
-  const token = localStorage.getItem('token');
   let user = {};
   try {
     user = JSON.parse(localStorage.getItem('user') || '{}');
-  } catch (e) {
+  } catch {
     user = {};
   }
   const [isLightMode, setIsLightMode] = useState(false);
