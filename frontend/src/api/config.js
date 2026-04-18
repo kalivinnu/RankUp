@@ -1,6 +1,7 @@
 // Central configuration for API calls
 // Use the VITE_API_BASE_URL environment variable if set, otherwise fallback to localhost for development
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+console.log('--- Frontend: API Base URL set to:', API_BASE_URL);
 
 // API endpoints to avoid string repetition throughout the app
 export const ENDPOINTS = {

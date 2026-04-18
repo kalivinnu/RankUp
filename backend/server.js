@@ -26,8 +26,23 @@ if (missingEnv.length > 0) {
 }
 
 // Middleware
+const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+console.log(`--- CORS: Allowed Origin set to: ${allowedOrigin} ---`);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // In production, we strictly check against allowedOrigin. 
+    // In development, we allow localhost.
+    if (origin === allowedOrigin || origin.includes('localhost')) {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️ CORS Blocked: Request from origin ${origin} not allowed by ${allowedOrigin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());
