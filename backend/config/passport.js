@@ -35,9 +35,9 @@ passport.use(new LocalStrategy(
 
 // Google Strategy
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID || 'dummy',
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'dummy',
-    callbackURL: "/api/auth/google/callback"
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "https://rankup-v46a.onrender.com/api/auth/google/callback"
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
