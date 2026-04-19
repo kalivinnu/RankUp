@@ -77,6 +77,20 @@ const AdminDashboard = () => {
     } catch { alert('Assignment failed'); }
   };
 
+  const handleResetPassword = async (userId, username) => {
+    const newPassword = window.prompt(`Enter new password for ${username}:`);
+    if (!newPassword) return;
+    
+    try {
+      await axios.post(`${API_BASE}/admin/reset-password`, { userId, newPassword }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      alert('Password reset successfully!');
+    } catch (err) {
+      alert('Failed to reset password: ' + (err.response?.data?.error || err.message));
+    }
+  };
+
   const handleQuestSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -765,6 +779,7 @@ const AdminDashboard = () => {
                   <th style={{ padding: '1rem 0' }}>Aptitude Qs</th>
                   <th style={{ padding: '1rem 0' }}>Technical Qs</th>
                   <th style={{ padding: '1rem 0' }}>Total Score</th>
+                  <th style={{ padding: '1rem 0' }}>Manage</th>
                 </tr>
               </thead>
               <tbody>
@@ -802,9 +817,18 @@ const AdminDashboard = () => {
                     <td style={{ padding: '1rem 0', fontWeight: 600, color: row.totalScore > 0 ? 'var(--success)' : 'orange' }}>
                       {row.totalScore > 0 ? `+${row.totalScore}` : '0'} Pts
                     </td>
+                    <td style={{ padding: '1rem 0' }}>
+                      <button 
+                        onClick={() => handleResetPassword(row.studentId, row.username)} 
+                        className="btn btn-outline" 
+                        style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', color: '#ff9800', borderColor: 'rgba(255,152,0,0.3)' }}
+                      >
+                        Reset Pwd
+                      </button>
+                    </td>
                   </tr>
                 ))}
-                {analytics.length === 0 && <tr><td colSpan="6" style={{ padding: '1rem 0', color: 'var(--text-muted)' }}>No student data available yet.</td></tr>}
+                {analytics.length === 0 && <tr><td colSpan="7" style={{ padding: '1rem 0', color: 'var(--text-muted)' }}>No student data available yet.</td></tr>}
               </tbody>
             </table>
           </div>
