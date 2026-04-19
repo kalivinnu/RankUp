@@ -1,9 +1,12 @@
 // Central configuration for API calls
-// Use the VITE_API_BASE_URL environment variable if set, otherwise fallback to localhost for development
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const isLocalhost = window.location.hostname === 'localhost';
+const productionBackendUrl = 'https://rankup-v46a.onrender.com';
+
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+  (isLocalhost ? 'http://localhost:5000' : productionBackendUrl);
 
 // Debug check for deployment
-if (window.location.hostname !== 'localhost' && API_BASE_URL.includes('localhost')) {
+if (!isLocalhost && API_BASE_URL.includes('localhost')) {
   console.error('⚠️ DEPLOYMENT WARNING: Frontend is running in production but trying to talk to localhost! Make sure VITE_API_BASE_URL is set in your Vercel Dashboard.');
 } else {
   console.log('--- Frontend: API Connection set to:', API_BASE_URL);

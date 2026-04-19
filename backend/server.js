@@ -26,7 +26,7 @@ if (missingEnv.length > 0) {
 }
 
 // Middleware
-const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+const allowedOrigin = process.env.FRONTEND_URL || 'https://rank-up-nine.vercel.app';
 console.log(`--- CORS: Allowed Origin set to: ${allowedOrigin} ---`);
 
 app.use(cors({
