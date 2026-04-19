@@ -1,7 +1,13 @@
 // Central configuration for API calls
 // Use the VITE_API_BASE_URL environment variable if set, otherwise fallback to localhost for development
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-console.log('--- Frontend: API Base URL set to:', API_BASE_URL);
+
+// Debug check for deployment
+if (window.location.hostname !== 'localhost' && API_BASE_URL.includes('localhost')) {
+  console.error('⚠️ DEPLOYMENT WARNING: Frontend is running in production but trying to talk to localhost! Make sure VITE_API_BASE_URL is set in your Vercel Dashboard.');
+} else {
+  console.log('--- Frontend: API Connection set to:', API_BASE_URL);
+}
 
 // API endpoints to avoid string repetition throughout the app
 export const ENDPOINTS = {
