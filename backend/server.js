@@ -35,8 +35,8 @@ app.use(cors({
     if (!origin) return callback(null, true);
     
     // In production, we strictly check against allowedOrigin. 
-    // In development, we allow localhost.
-    if (origin === allowedOrigin || origin.includes('localhost')) {
+    // In development/testing, we allow localhost and all Vercel subdomains.
+    if (origin === allowedOrigin || origin.includes('localhost') || origin.endsWith('.vercel.app')) {
       callback(null, true);
     } else {
       console.warn(`⚠️ CORS Blocked: Request from origin ${origin} not allowed by ${allowedOrigin}`);
