@@ -30,6 +30,10 @@ const UserSchema = new mongoose.Schema({
   preferredDomain: {
     type: String
   },
+  name: { type: String },
+  usn: { type: String, unique: true, sparse: true },
+  year: { type: String },
+  semester: { type: String },
   assignedRoadmapId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Roadmap'

@@ -128,6 +128,10 @@ router.get('/analytics', async (req, res) => {
       return {
         studentId: student._id,
         username: student.username,
+        name: student.name || 'N/A',
+        usn: student.usn || 'N/A',
+        year: student.year || 'N/A',
+        semester: student.semester || 'N/A',
         department: getDeptName(student.username),
         preferredDomain: student.preferredDomain || 'Not selected',
         roadmap: student.assignedRoadmapId ? student.assignedRoadmapId.title : 'None',
@@ -249,6 +253,24 @@ router.post('/reset-password', async (req, res) => {
     res.json({ message: 'Password reset successfully' });
   } catch (err) {
     console.error('Error resetting password:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Remove Student
+router.delete('/students/:id', async (req, res) => {
+  try {
+    const student = await User.findById(req.params.id);
+    if (!student) return res.status(404).json({ error: 'Student not found' });
+    if (student.role !== 'student') return res.status(400).json({ error: 'Cannot delete an admin user' });
+    
+    await User.findByIdAndDelete(req.params.id);
+    // Optionally delete related answers and sessions
+    await Answer.deleteMany({ studentId: req.params.id });
+    await TestSession.deleteMany({ studentId: req.params.id });
+    
+    res.json({ message: 'Student and related records deleted successfully' });
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });

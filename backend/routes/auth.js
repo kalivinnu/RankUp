@@ -11,7 +11,7 @@ const generateToken = (user) => {
 // Local Registration
 router.post('/register', async (req, res) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password, role, name, usn, year, semester } = req.body;
     console.log(`--- Registration Attempt: ${username} (${role || 'student'}) ---`);
     
     // Domain Validation
@@ -28,7 +28,15 @@ router.post('/register', async (req, res) => {
     let user = await User.findOne({ username });
     if (user) return res.status(400).json({ message: 'User already exists' });
 
-    user = new User({ username, password, role: userRole });
+    user = new User({ 
+      username, 
+      password, 
+      role: userRole,
+      name,
+      usn,
+      year,
+      semester
+    });
     await user.save();
     
     const token = generateToken(user);

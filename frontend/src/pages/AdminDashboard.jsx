@@ -13,6 +13,7 @@ const AdminDashboard = () => {
   const [allRoadmaps, setAllRoadmaps] = useState([]);
   const [allQuestions, setAllQuestions] = useState([]);
   const [allTests, setAllTests] = useState([]);
+  const [viewingStudentDetails, setViewingStudentDetails] = useState(null);
 
   // Question Form
   const [qForm, setQForm] = useState({ 
@@ -89,6 +90,18 @@ const AdminDashboard = () => {
     } catch (err) {
       alert('Failed to reset password: ' + (err.response?.data?.error || err.message));
     }
+  };
+
+  const handleDeleteStudent = async (id) => {
+    if (!window.confirm('Are you sure you want to PERMANENTLY remove this student and all their data (answers, test results)? This cannot be undone.')) return;
+    try {
+      await axios.delete(`${API_BASE}/admin/students/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      alert('Student removed successfully');
+      setViewingStudentDetails(null);
+      fetchDashboardData();
+    } catch { alert('Failed to delete student'); }
   };
 
   const handleQuestSubmit = async (e) => {
@@ -792,7 +805,13 @@ const AdminDashboard = () => {
                 {analytics.filter(a => selectedDepartment === 'All' || a.department === selectedDepartment).map((row, i) => (
                   <tr key={i} style={{ borderBottom: '1px solid var(--border-color)' }}>
                     <td style={{ padding: '1rem 0' }}>
-                      <div style={{ fontWeight: 500 }}>{row.username}</div>
+                      <div 
+                        style={{ fontWeight: 500, cursor: 'pointer', color: 'var(--primary-color)', textDecoration: 'underline' }}
+                        onClick={() => setViewingStudentDetails(row)}
+                        title="Click to view full details"
+                      >
+                        {row.username}
+                      </div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Dept: {row.department} | P: {row.preferredDomain}</div>
                     </td>
                     <td style={{ padding: '1rem 0' }}>
@@ -837,6 +856,43 @@ const AdminDashboard = () => {
                 {analytics.length === 0 && <tr><td colSpan="7" style={{ padding: '1rem 0', color: 'var(--text-muted)' }}>No student data available yet.</td></tr>}
               </tbody>
             </table>
+
+            {viewingStudentDetails && (
+              <div className="glass-panel" style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1000, width: '90%', maxWidth: '500px', padding: '2rem', border: '2px solid var(--primary-color)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                   <h2 style={{ margin: 0 }}>Student Profile</h2>
+                   <button className="btn btn-outline" onClick={() => setViewingStudentDetails(null)}>&times; Close</button>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '10px' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Name:</span> <span style={{ fontWeight: 600 }}>{viewingStudentDetails.name}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Email:</span> <span>{viewingStudentDetails.username}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>USN:</span> <span>{viewingStudentDetails.usn}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Department:</span> <span style={{ color: 'var(--secondary-color)' }}>{viewingStudentDetails.department}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Year/Sem:</span> <span>Year {viewingStudentDetails.year} | Sem {viewingStudentDetails.semester}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Roadmap:</span> <span>{viewingStudentDetails.roadmap}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Total Score:</span> <span style={{ fontWeight: 'bold', color: 'var(--success)' }}>{viewingStudentDetails.totalScore} Pts</span>
+                  </div>
+                  <div style={{ marginTop: '1rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '1rem' }}>
+                    <button 
+                      onClick={() => handleResetPassword(viewingStudentDetails.studentId, viewingStudentDetails.username)} 
+                      className="btn btn-outline" 
+                      style={{ flex: 1, color: '#ff9800', borderColor: 'orange' }}
+                    >
+                      Reset Password
+                    </button>
+                    <button 
+                      onClick={() => handleDeleteStudent(viewingStudentDetails.studentId)} 
+                      className="btn" 
+                      style={{ flex: 1, background: '#f44336', color: 'white' }}
+                    >
+                      Remove Student
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {viewingStudentDetails && <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 999 }} onClick={() => setViewingStudentDetails(null)}></div>}
           </div>
         )}
         {activeTab === 'view-questions' && (
