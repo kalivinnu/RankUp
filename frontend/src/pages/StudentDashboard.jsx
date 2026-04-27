@@ -115,14 +115,37 @@ const StudentDashboard = () => {
     return () => clearInterval(interval);
   }, [testSession, timeLeft]);
 
+  const reportViolation = async (type, details) => {
+    if (!testSession || testSubmittedResult) return;
+    try {
+      await axios.post(`${API_BASE}/student/tests/violation`, {
+        sessionId: testSession._id,
+        type,
+        details
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+    } catch (err) {
+      console.error('Failed to report violation', err);
+    }
+  };
+
   const [isBlurred, setIsBlurred] = useState(false);
 
   useEffect(() => {
-    const handleBlur = () => setIsBlurred(true);
+    const handleBlur = () => {
+      setIsBlurred(true);
+      if (testSession) {
+        reportViolation('blur', 'Tab or window lost focus (Potential AI tool usage / tab switching)');
+      }
+    };
     const handleFocus = () => setIsBlurred(false);
     
     const blockAction = (e) => {
       e.preventDefault();
+      if (testSession) {
+        reportViolation(e.type, `${e.type} action attempted`);
+      }
     };
 
     window.addEventListener('blur', handleBlur);
@@ -132,10 +155,12 @@ const StudentDashboard = () => {
     window.addEventListener('cut', blockAction);
     window.addEventListener('contextmenu', blockAction);
     
-    // Keyboard shortcuts block (PrintScreen is tricky, but we can block F12/Ctrl+Shift+I loosely if desired, though focus/blur handles Circle To Search)
     const handleKeyDown = (e) => {
       if (e.key === 'PrintScreen' || (e.ctrlKey && ['c', 'v', 'x', 'p'].includes(e.key.toLowerCase()))) {
         e.preventDefault();
+        if (testSession) {
+          reportViolation('keyboard', `Restricted key combination: ${e.key}`);
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -149,7 +174,7 @@ const StudentDashboard = () => {
       window.removeEventListener('contextmenu', blockAction);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [testSession]); // Added testSession dependency to ensure it has the context
 
   const fetchRoadmap = async () => {
     try {
@@ -232,9 +257,15 @@ const StudentDashboard = () => {
     }
 
     try {
-      await axios.post(`${API_BASE}/student/answer`, payload, {
+      const res = await axios.post(`${API_BASE}/student/answer`, payload, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
+      if (res.data.answerFeedback) {
+        setSubmittedAnswers(prev => ({
+          ...prev,
+          [q._id]: { ...prev[q._id], answerFeedback: res.data.answerFeedback }
+        }));
+      }
     } catch { alert('Failed to submit answer'); }
   };
 
@@ -714,9 +745,9 @@ const StudentDashboard = () => {
                             </div>
                          )}
 
-                         {q.answerFeedback && (
+                         {(q.answerFeedback || submittedAnswers[q._id]?.answerFeedback) && (
                             <div style={{ color: 'var(--text-color)', fontSize: '0.9rem', marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                              <p style={{ opacity: 0.9 }}><strong>Feedback:</strong> {q.answerFeedback}</p>
+                              <p style={{ opacity: 0.9 }}><strong>Feedback:</strong> {q.answerFeedback || submittedAnswers[q._id]?.answerFeedback}</p>
                             </div>
                          )}
                        </div>

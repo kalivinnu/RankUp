@@ -214,11 +214,12 @@ router.get('/tests/:id/export', async (req, res) => {
       return mapping[code] || code.toUpperCase();
     };
 
-    let csv = 'Student Name,USN,Email,Department,Branch (Manual),Start Time,Completed,Total Score\n';
+    let csv = 'Student Name,USN,Email,Department,Branch (Manual),Start Time,Completed,Total Score,Security Violations\n';
     sessions.forEach(session => {
       const email = session.studentId ? session.studentId.username : 'N/A';
       const department = email !== 'N/A' ? getDeptName(email) : (session.branch || 'N/A');
-      csv += `"${session.studentName}","${session.usn}","${email}","${department}","${session.branch}","${session.startTime}",${session.completed},${session.totalScore}\n`;
+      const violationCount = session.violations ? session.violations.length : 0;
+      csv += `"${session.studentName}","${session.usn}","${email}","${department}","${session.branch}","${session.startTime}",${session.completed},${session.totalScore},${violationCount}\n`;
     });
     
     res.header('Content-Type', 'text/csv');

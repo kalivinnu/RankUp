@@ -27,6 +27,12 @@ const TestSessionSchema = new mongoose.Schema({
     language: { type: String },
     isCorrect: { type: Boolean },
     score: { type: Number, default: 0 }
+  }],
+  
+  violations: [{
+    type: { type: String }, // 'blur', 'copy', 'paste', 'contextmenu', 'keyboard'
+    timestamp: { type: Date, default: Date.now },
+    details: { type: String }
   }]
 }, { timestamps: true });
 

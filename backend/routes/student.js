@@ -82,7 +82,7 @@ router.post('/answer', async (req, res) => {
       score: calculatedScore
     });
     await answer.save();
-    res.status(201).json(answer);
+    res.status(201).json({ ...answer._doc, answerFeedback: question ? question.answerFeedback : null });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -126,6 +126,22 @@ router.post('/tests/:id/start', async (req, res) => {
     
     await session.save();
     res.status(201).json(session);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Log a violation during a test
+router.post('/tests/violation', async (req, res) => {
+  try {
+    const { sessionId, type, details } = req.body;
+    const session = await TestSession.findById(sessionId);
+    if (!session) return res.status(404).json({ error: 'Session not found' });
+    
+    session.violations.push({ type, details, timestamp: new Date() });
+    await session.save();
+    console.warn(`⚠️ SECURITY VIOLATION: Student ${session.studentName} (${session.studentId}) - Type: ${type} - Details: ${details}`);
+    res.json({ message: 'Violation logged' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

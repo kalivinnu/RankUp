@@ -652,6 +652,7 @@ const AdminDashboard = () => {
                        <th style={{ padding: '1rem' }}>Branch</th>
                        <th style={{ padding: '1rem' }}>Started At</th>
                        <th style={{ padding: '1rem' }}>Status</th>
+                       <th style={{ padding: '1rem' }}>Violations</th>
                        <th style={{ padding: '1rem' }}>Total Score</th>
                      </tr>
                    </thead>
@@ -665,11 +666,16 @@ const AdminDashboard = () => {
                          <td style={{ padding: '1rem' }}>
                            <span style={{ color: res.completed ? 'var(--success)' : 'orange' }}>{res.completed ? 'Completed' : 'In Progress'}</span>
                          </td>
+                         <td style={{ padding: '1rem' }}>
+                           <span style={{ color: res.violations?.length > 0 ? '#ff4d4d' : 'var(--success)', fontWeight: res.violations?.length > 0 ? 'bold' : 'normal' }}>
+                             {res.violations?.length || 0}
+                           </span>
+                         </td>
                          <td style={{ padding: '1rem', fontWeight: 'bold' }}>{res.totalScore} Pts</td>
                        </tr>
                      ))}
                      {testResults.length === 0 && (
-                       <tr><td colSpan="6" style={{ padding: '1rem', color: 'var(--text-muted)' }}>No students have taken this test yet.</td></tr>
+                       <tr><td colSpan="7" style={{ padding: '1rem', color: 'var(--text-muted)' }}>No students have taken this test yet.</td></tr>
                      )}
                    </tbody>
                 </table>

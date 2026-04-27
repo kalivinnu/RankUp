@@ -37,7 +37,7 @@ passport.use(new LocalStrategy(
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://rankup-v46a.onrender.com/api/auth/google/callback"
+    callbackURL: "/api/auth/google/callback" // Relative path works if the strategy is configured on the same domain
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
