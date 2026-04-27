@@ -873,22 +873,23 @@ const AdminDashboard = () => {
                     <span style={{ color: 'var(--text-muted)' }}>Roadmap:</span> <span>{viewingStudentDetails.roadmap}</span>
                     <span style={{ color: 'var(--text-muted)' }}>Total Score:</span> <span style={{ fontWeight: 'bold', color: 'var(--success)' }}>{viewingStudentDetails.totalScore} Pts</span>
                   </div>
-                  <div style={{ marginTop: '1rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '1rem' }}>
-                    <button 
-                      onClick={() => handleResetPassword(viewingStudentDetails.studentId, viewingStudentDetails.username)} 
-                      className="btn btn-outline" 
-                      style={{ flex: 1, color: '#ff9800', borderColor: 'orange' }}
-                    >
-                      Reset Password
-                    </button>
+                    <div style={{ background: 'rgba(255,152,0,0.1)', padding: '1rem', borderRadius: '6px', border: '1px solid rgba(255,152,0,0.2)' }}>
+                      <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', color: '#ff9800' }}>SECURITY MANAGEMENT</p>
+                      <button 
+                        onClick={() => handleResetPassword(viewingStudentDetails.studentId, viewingStudentDetails.username)} 
+                        className="btn" 
+                        style={{ width: '100%', background: '#ff9800', color: 'white' }}
+                      >
+                        Reset Student Password
+                      </button>
+                    </div>
                     <button 
                       onClick={() => handleDeleteStudent(viewingStudentDetails.studentId)} 
                       className="btn" 
-                      style={{ flex: 1, background: '#f44336', color: 'white' }}
+                      style={{ width: '100%', background: '#f44336', color: 'white', marginTop: '0.5rem' }}
                     >
-                      Remove Student
+                      Permanently Remove Student
                     </button>
-                  </div>
                 </div>
               </div>
             )}
